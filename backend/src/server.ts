@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import { pool } from "./database.js";
 import paquetesRouter from "./routes/paquetes.routes.js";
+import authRouter from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -11,14 +12,12 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta principal
 app.get("/", (req, res) => {
   res.json({
     mensaje: "API de LOGISYNC funcionando correctamente"
   });
 });
 
-// Comprobar conexión con PostgreSQL
 app.get("/api/database", async (req, res) => {
   try {
     const resultado = await pool.query(
@@ -39,9 +38,11 @@ app.get("/api/database", async (req, res) => {
   }
 });
 
-// Rutas de paquetes
+// Rutas del sistema
 app.use("/api/paquetes", paquetesRouter);
+app.use("/api/auth", authRouter);
 
+// El servidor se inicia al final
 app.listen(PORT, () => {
   console.log(
     `Servidor LOGISYNC ejecutándose en http://localhost:${PORT}`
