@@ -4,6 +4,8 @@ import "dotenv/config";
 import { pool } from "./database.js";
 import paquetesRouter from "./routes/paquetes.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import {verificarToken, permitirRoles} from "./middlewares/auth.middleware.js";
+import usuariosRouter from "./routes/usuarios.routes.js";
 
 const app = express();
 
@@ -39,8 +41,20 @@ app.get("/api/database", async (req, res) => {
 });
 
 // Rutas del sistema
-app.use("/api/paquetes", paquetesRouter);
+app.use(
+  "/api/paquetes",
+  verificarToken,
+  permitirRoles("administrador", "operador"),
+  paquetesRouter
+);
 app.use("/api/auth", authRouter);
+
+app.use(
+  "/api/usuarios",
+  verificarToken,
+  permitirRoles("administrador"),
+  usuariosRouter
+);
 
 // El servidor se inicia al final
 app.listen(PORT, () => {
