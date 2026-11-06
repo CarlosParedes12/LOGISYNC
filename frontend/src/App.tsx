@@ -178,12 +178,12 @@ export default function App() {
           <div className="panel"><div className="filters"><div className="searchbox"><Search size={18}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar por guía, cliente, origen..." aria-label="Buscar envíos"/></div><div className="select-wrap"><ArrowDownUp size={16}/><select value={estadoFilter} onChange={e=>setEstadoFilter(e.target.value)} aria-label="Filtrar estado"><option>Todos</option>{states.map(s=><option key={s}>{s}</option>)}</select><ChevronDown size={15}/></div><button className="secondary-btn" onClick={()=>void loadPaquetes()}><RefreshCcw size={17}/> Actualizar</button></div>
           {loading ? <Loading/> : filtered.length === 0 ? <Empty title="No se encontraron envíos" body="Prueba otros filtros o registra un nuevo envío."/> : <PackageTable paquetes={filtered} onOpen={openPackage}/>}</div>
         </>}
-        {page === 'registrar' && <Register token={token} onSaved={async ()=>{ await loadPaquetes(true); go('paquetes'); notify('Envío registrado correctamente.'); }} onError={errorNotify}/>}
+        {page === 'registrar' && token && <Register token={token} onSaved={async ()=>{ await loadPaquetes(true); go('paquetes'); notify('Envío registrado correctamente.'); }} onError={errorNotify}/>}
         {page === 'seguimiento' && <>
           <div className="page-heading"><div><span className="eyebrow">TRAZABILIDAD</span><h1>Seguimiento de envíos</h1><p>Busca un número de guía y revisa los movimientos del paquete.</p></div></div>
           <div className="panel follow-panel"><div className="follow-image"><Radio size={29}/></div><h2>Consulta por número de guía</h2><p>La información proviene directamente de la base de datos de LOGISYNC.</p><form className="tracking-form" onSubmit={e=>{e.preventDefault(); if(search.trim()) openPackage(search.trim());}}><div className="searchbox"><Search size={18}/><input placeholder="Ejemplo: BP001234567" value={search} onChange={e=>setSearch(e.target.value)}/></div><button className="primary-btn" type="submit">Consultar <ArrowRight size={16}/></button></form><div className="info-line"><LockKeyhole size={16}/> Consulta disponible para usuarios autenticados.</div></div>
         </>}
-        {page === 'usuarios' && isAdmin && <Usuarios token={token} usuarios={usuarios} reload={loadUsuarios} errorNotify={errorNotify} notify={notify}/>}
+        {page === 'usuarios' && isAdmin && token && <Usuarios token={token} usuarios={usuarios} reload={loadUsuarios} errorNotify={errorNotify} notify={notify}/>}
         <footer className="content-footer"><span>LOGISYNC · BPGroupGT</span><span>Prototipo académico · Los datos reflejan el backend local.</span></footer>
       </div>
     </main>
